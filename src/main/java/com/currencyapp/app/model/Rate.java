@@ -1,46 +1,68 @@
 package com.currencyapp.app.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class Rate {
     @NotBlank
-    private String currencyCode;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private LocalDate date;
+    private String currency;
+    @NotBlank
+    private String code;
+    @NotNull
+    private Double bid;
+    @NotNull
+    private Double ask;
 
-    public Rate(String currencyCode, LocalDate date) {
-        this.currencyCode = currencyCode;
-        this.date = date;
+    public Rate(String currency, String code, Double bid, Double ask) {
+        this.currency = currency;
+        this.code = code;
+        this.bid = bid;
+        this.ask = ask;
     }
 
     public Rate() {
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public String getCode() {
+        return code;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Double getBid() {
+        return bid;
+    }
+
+    public void setBid(Double bid) {
+        this.bid = bid;
+    }
+
+    public Double getAsk() {
+        return ask;
+    }
+
+    public void setAsk(Double ask) {
+        this.ask = ask;
     }
 
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Rate{");
-        sb.append("currencyCode='").append(currencyCode).append('\'');
-        sb.append(", date=").append(date);
+        sb.append("currency='").append(currency).append('\'');
+        sb.append(", code='").append(code).append('\'');
+        sb.append(", bid=").append(bid);
+        sb.append(", ask=").append(ask);
         sb.append('}');
         return sb.toString();
     }
@@ -50,12 +72,14 @@ public class Rate {
         if (this == o) return true;
         if (!(o instanceof Rate)) return false;
         Rate rate = (Rate) o;
-        return Objects.equals(currencyCode, rate.currencyCode) &&
-                Objects.equals(date, rate.date);
+        return Objects.equals(currency, rate.currency) &&
+                Objects.equals(code, rate.code) &&
+                Objects.equals(bid, rate.bid) &&
+                Objects.equals(ask, rate.ask);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(currencyCode, date);
+        return Objects.hash(currency, code, bid, ask);
     }
 }
