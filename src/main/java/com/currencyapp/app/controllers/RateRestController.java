@@ -5,12 +5,13 @@ import com.currencyapp.app.services.RateService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.util.OptionalDouble;
 
 @RestController
 public class RateRestController {
-
 
     private RateService rateService;
     public RateRestController(RateService rateService) {
@@ -18,8 +19,10 @@ public class RateRestController {
     }
 
     @GetMapping(value = "/process", produces = "application/json")
-    public JsonRateModel processData(@RequestParam String table, @RequestParam String code,
-                                     @RequestParam String startDate, @RequestParam String endDate) {
-        return rateService.getRateObject(table, code, LocalDate.parse(startDate), LocalDate.parse(endDate));
+    public ModelAndView processData(@RequestParam String table, @RequestParam String code,
+                                    @RequestParam String startDate, @RequestParam String endDate) {
+
+        Double average = rateService.getAverageBoughtRate(table, code, LocalDate.parse(startDate), LocalDate.parse(endDate));
+        return new ModelAndView("resultView", "average", average);
     }
 }
