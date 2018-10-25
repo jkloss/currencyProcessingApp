@@ -31,7 +31,7 @@ public class RateService {
     }
 
     private Double getAverageBuyRate(String code, LocalDate startDate, LocalDate endDate) {
-        OptionalDouble averageAsOptional =  getRateModelObject(code, startDate, endDate).getRates().stream()
+        OptionalDouble averageAsOptional = getRateModelObject(code, startDate, endDate).getRates().stream()
                 .mapToDouble(Rate::getBid)
                 .average();
 
