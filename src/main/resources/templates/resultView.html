@@ -5,6 +5,7 @@
     <title>Result</title>
 </head>
 <body>
-<p th:text="'Average: ' + ${average}"></p>
+<h1 th:text="'Standard deviation: ' + ${valuesToDisplay.get('standardDeviation')}"></h1>
+<h1 th:text="'Average: ' + ${valuesToDisplay.get('average')}"></h1>
 </body>
 </html>

@@ -1,14 +1,18 @@
 package com.currencyapp.app.services;
 
-import com.currencyapp.app.model.JsonRateModel;
+import com.currencyapp.app.model.RateModel;
 import com.currencyapp.app.model.Rate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.OptionalDouble;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class RateService {
@@ -21,13 +25,13 @@ public class RateService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    private JsonRateModel getRateObject(String table, String code, LocalDate startDate, LocalDate endDate) {
+    private RateModel getRateObject(String table, String code, LocalDate startDate, LocalDate endDate) {
         return restTemplate.getForObject(CORE_URL + "/" + table + "/" + code + "/"
-                + startDate + "/" + endDate, JsonRateModel.class);
+                + startDate + "/" + endDate, RateModel.class);
 
     }
 
-    public Double getAverageBoughtRate(String table, String code, LocalDate startDate, LocalDate endDate) {
+    private Double getAverageBoughtRate(String table, String code, LocalDate startDate, LocalDate endDate) {
         OptionalDouble averageAsOptional =  getRateObject(table, code, startDate, endDate).getRates().stream()
                 .mapToDouble(Rate::getBid)
                 .average();
@@ -39,8 +43,35 @@ public class RateService {
         }
     }
 
-    public Double getStandardDeviation(String table, String code,
-                                       LocalDate startDate, LocalDate endDate) {
-        return null;
+    private Double getSoldStandardDeviation(String table, String code,
+                                            LocalDate startDate, LocalDate endDate) {
+        List<Double> askValues = getRateObject(table, code, startDate, endDate).getRates().stream()
+                .map(Rate::getAsk)
+                .collect(toList());
+
+        double sum = 0.0;
+        double standardDeviation = 0.0;
+        int listLength = askValues.size();
+
+        for (double num : askValues) {
+            sum = sum + num;
+        }
+
+        double quotient = sum / listLength;
+
+        for (double num : askValues) {
+            standardDeviation = standardDeviation + Math.pow(num - quotient, 2);
+        }
+
+        return Math.sqrt(standardDeviation / listLength);
+    }
+
+    public Map<String, Double> getStandardDeviationAndAverageMap(String table, String code,
+                                                                 LocalDate startDate, LocalDate endDate) {
+        Map<String, Double> map = new HashMap<>();
+        map.put("standardDeviation", getSoldStandardDeviation(table, code, startDate, endDate));
+        map.put("average", getAverageBoughtRate(table, code, startDate, endDate));
+
+        return map;
     }
 }

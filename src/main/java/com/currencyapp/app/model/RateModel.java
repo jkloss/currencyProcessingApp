@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JsonRateModel {
+public class RateModel {
     @NotBlank
     private String table;
     @NotBlank
@@ -16,14 +16,14 @@ public class JsonRateModel {
     private String code;
     private List<Rate> rates;
 
-    public JsonRateModel(String table, String currency, String code, List<Rate> rates) {
+    public RateModel(String table, String currency, String code, List<Rate> rates) {
         this.table = table;
         this.currency = currency;
         this.code = code;
         this.rates = rates;
     }
 
-    public JsonRateModel() {
+    public RateModel() {
     }
 
     public String getTable() {
@@ -60,7 +60,7 @@ public class JsonRateModel {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("JsonRateModel{");
+        final StringBuffer sb = new StringBuffer("RateModel{");
         sb.append("table='").append(table).append('\'');
         sb.append(", currency='").append(currency).append('\'');
         sb.append(", code='").append(code).append('\'');
@@ -72,8 +72,8 @@ public class JsonRateModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof JsonRateModel)) return false;
-        JsonRateModel rateModel = (JsonRateModel) o;
+        if (!(o instanceof RateModel)) return false;
+        RateModel rateModel = (RateModel) o;
         return Objects.equals(table, rateModel.table) &&
                 Objects.equals(currency, rateModel.currency) &&
                 Objects.equals(code, rateModel.code) &&
