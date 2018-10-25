@@ -3,9 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Result</title>
+    <style>
+        .result {
+            text-align: center;
+        }
+        body {
+            background-color: cornflowerblue;
+        }
+        #click {
+            text-align: center;
+        }
+        #butt {
+            background-color: lightblue;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1 th:text="'Standard deviation: ' + ${valuesToDisplay.get('standardDeviation')}"></h1>
-<h1 th:text="'Average: ' + ${valuesToDisplay.get('average')}"></h1>
+<h1 class="result" th:text="'Standard deviation: ' + ${valuesToDisplay.get('standardDeviation')}"></h1>
+<h1 class="result" th:text="'Average: ' + ${valuesToDisplay.get('average')}"></h1>
 </body>
+    <div id="click">
+        <form action="/credentials">
+            <button id="butt" type="submit">Click!</button>
+        </form>
+        <h1>^</h1>
+        <h2>Click here to check another one :)</h2>
+    </div>
 </html>
