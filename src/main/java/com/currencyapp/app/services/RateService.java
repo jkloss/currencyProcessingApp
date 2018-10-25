@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class RateService {
 
-    private static final String CORE_URL = "http://api.nbp.pl/api/exchangerates/rates";
+    private static final String CORE_URL = "http://api.nbp.pl/api/exchangerates/rates/c/";
 
     private RestTemplate restTemplate;
 
@@ -25,14 +25,13 @@ public class RateService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    private RateModel getRateObject(String table, String code, LocalDate startDate, LocalDate endDate) {
-        return restTemplate.getForObject(CORE_URL + "/" + table + "/" + code + "/"
+    private RateModel getRateModelObject(String code, LocalDate startDate, LocalDate endDate) {
+        return restTemplate.getForObject(CORE_URL + code + "/"
                 + startDate + "/" + endDate, RateModel.class);
-
     }
 
-    private Double getAverageBoughtRate(String table, String code, LocalDate startDate, LocalDate endDate) {
-        OptionalDouble averageAsOptional =  getRateObject(table, code, startDate, endDate).getRates().stream()
+    private Double getAverageBuyRate(String code, LocalDate startDate, LocalDate endDate) {
+        OptionalDouble averageAsOptional =  getRateModelObject(code, startDate, endDate).getRates().stream()
                 .mapToDouble(Rate::getBid)
                 .average();
 
@@ -43,9 +42,8 @@ public class RateService {
         }
     }
 
-    private Double getSoldStandardDeviation(String table, String code,
-                                            LocalDate startDate, LocalDate endDate) {
-        List<Double> askValues = getRateObject(table, code, startDate, endDate).getRates().stream()
+    private Double getSellStandardDeviation(String code, LocalDate startDate, LocalDate endDate) {
+        List<Double> askValues = getRateModelObject(code, startDate, endDate).getRates().stream()
                 .map(Rate::getAsk)
                 .collect(toList());
 
@@ -66,11 +64,11 @@ public class RateService {
         return Math.sqrt(standardDeviation / listLength);
     }
 
-    public Map<String, Double> getStandardDeviationAndAverageMap(String table, String code,
-                                                                 LocalDate startDate, LocalDate endDate) {
+    public Map<String, Double> getStandardDeviationAndAverageMap(String code, LocalDate startDate,
+                                                                 LocalDate endDate) {
         Map<String, Double> map = new HashMap<>();
-        map.put("standardDeviation", getSoldStandardDeviation(table, code, startDate, endDate));
-        map.put("average", getAverageBoughtRate(table, code, startDate, endDate));
+        map.put("standardDeviation", getSellStandardDeviation(code, startDate, endDate));
+        map.put("average", getAverageBuyRate(code, startDate, endDate));
 
         return map;
     }

@@ -18,10 +18,11 @@ public class RateRestController {
     }
 
     @GetMapping(value = "/process", produces = "application/json")
-    public ModelAndView processData(@RequestParam String table, @RequestParam String code,
-                                    @RequestParam String startDate, @RequestParam String endDate) {
+    public ModelAndView processData(@RequestParam String code, @RequestParam String startDate,
+                                    @RequestParam String endDate) {
 
-        Map<String, Double> standardDeviationAndAverageMap = rateService.getStandardDeviationAndAverageMap(table, code, LocalDate.parse(startDate), LocalDate.parse(endDate));
+        Map<String, Double> standardDeviationAndAverageMap = rateService.getStandardDeviationAndAverageMap(code,
+                LocalDate.parse(startDate), LocalDate.parse(endDate));
         return new ModelAndView("resultView", "valuesToDisplay", standardDeviationAndAverageMap);
     }
 }
