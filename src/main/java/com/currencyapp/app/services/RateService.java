@@ -14,12 +14,15 @@ public class RateService {
     private static final String CORE_URL = "http://api.nbp.pl/api/exchangerates/rates";
 
     private RestTemplate restTemplate;
+
     public RateService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public String getModel(String table, String code, LocalDate startDate, LocalDate endDate) {
+    public JsonRateModel getRateObject(String table, String code, LocalDate startDate, LocalDate endDate) {
         return restTemplate.getForObject(CORE_URL + "/" + table + "/" + code + "/"
-        + startDate + "/" + endDate + "?format=json", String.class);
+                + startDate + "/" + endDate, JsonRateModel.class);
+
     }
+    
 }

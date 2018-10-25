@@ -1,31 +1,25 @@
 package com.currencyapp.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JsonRateModel {
     @NotBlank
     private String table;
     @NotBlank
-    private String no;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private LocalDate tradingDate;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private LocalDate effectiveDate;
+    private String currency;
+    @NotBlank
+    private String code;
     private List<Rate> rates;
 
-    public JsonRateModel(String table, String no, LocalDate tradingDate,
-                         LocalDate effectiveDate, List<Rate> rates) {
+    public JsonRateModel(String table, String currency, String code, List<Rate> rates) {
         this.table = table;
-        this.no = no;
-        this.tradingDate = tradingDate;
-        this.effectiveDate = effectiveDate;
+        this.currency = currency;
+        this.code = code;
         this.rates = rates;
     }
 
@@ -40,28 +34,20 @@ public class JsonRateModel {
         this.table = table;
     }
 
-    public String getNo() {
-        return no;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setNo(String no) {
-        this.no = no;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
-    public LocalDate getTradingDate() {
-        return tradingDate;
+    public String getCode() {
+        return code;
     }
 
-    public void setTradingDate(LocalDate tradingDate) {
-        this.tradingDate = tradingDate;
-    }
-
-    public LocalDate getEffectiveDate() {
-        return effectiveDate;
-    }
-
-    public void setEffectiveDate(LocalDate effectiveDate) {
-        this.effectiveDate = effectiveDate;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public List<Rate> getRates() {
@@ -76,9 +62,8 @@ public class JsonRateModel {
     public String toString() {
         final StringBuffer sb = new StringBuffer("JsonRateModel{");
         sb.append("table='").append(table).append('\'');
-        sb.append(", no='").append(no).append('\'');
-        sb.append(", tradingDate=").append(tradingDate);
-        sb.append(", effectiveDate=").append(effectiveDate);
+        sb.append(", currency='").append(currency).append('\'');
+        sb.append(", code='").append(code).append('\'');
         sb.append(", rates=").append(rates);
         sb.append('}');
         return sb.toString();
@@ -88,16 +73,15 @@ public class JsonRateModel {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof JsonRateModel)) return false;
-        JsonRateModel that = (JsonRateModel) o;
-        return Objects.equals(table, that.table) &&
-                Objects.equals(no, that.no) &&
-                Objects.equals(tradingDate, that.tradingDate) &&
-                Objects.equals(effectiveDate, that.effectiveDate) &&
-                Objects.equals(rates, that.rates);
+        JsonRateModel rateModel = (JsonRateModel) o;
+        return Objects.equals(table, rateModel.table) &&
+                Objects.equals(currency, rateModel.currency) &&
+                Objects.equals(code, rateModel.code) &&
+                Objects.equals(rates, rateModel.rates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(table, no, tradingDate, effectiveDate, rates);
+        return Objects.hash(table, currency, code, rates);
     }
 }

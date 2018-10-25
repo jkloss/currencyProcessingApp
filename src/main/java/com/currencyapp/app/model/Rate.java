@@ -1,24 +1,27 @@
 package com.currencyapp.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Objects;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Rate {
+
     @NotBlank
-    private String currency;
-    @NotBlank
-    private String code;
+    private String no;
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    private LocalDate effectiveDate;
     @NotNull
     private Double bid;
     @NotNull
     private Double ask;
 
-    public Rate(String currency, String code, Double bid, Double ask) {
-        this.currency = currency;
-        this.code = code;
+    public Rate(String no, LocalDate effectiveDate, Double bid, Double ask) {
+        this.no = no;
+        this.effectiveDate = effectiveDate;
         this.bid = bid;
         this.ask = ask;
     }
@@ -26,20 +29,20 @@ public class Rate {
     public Rate() {
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getNo() {
+        return no;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setNo(String no) {
+        this.no = no;
     }
 
-    public String getCode() {
-        return code;
+    public LocalDate getEffectiveDate() {
+        return effectiveDate;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setEffectiveDate(LocalDate effectiveDate) {
+        this.effectiveDate = effectiveDate;
     }
 
     public Double getBid() {
@@ -61,8 +64,8 @@ public class Rate {
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Rate{");
-        sb.append("currency='").append(currency).append('\'');
-        sb.append(", code='").append(code).append('\'');
+        sb.append("no='").append(no).append('\'');
+        sb.append(", effectiveDate=").append(effectiveDate);
         sb.append(", bid=").append(bid);
         sb.append(", ask=").append(ask);
         sb.append('}');
@@ -74,14 +77,14 @@ public class Rate {
         if (this == o) return true;
         if (!(o instanceof Rate)) return false;
         Rate rate = (Rate) o;
-        return Objects.equals(currency, rate.currency) &&
-                Objects.equals(code, rate.code) &&
+        return Objects.equals(no, rate.no) &&
+                Objects.equals(effectiveDate, rate.effectiveDate) &&
                 Objects.equals(bid, rate.bid) &&
                 Objects.equals(ask, rate.ask);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(currency, code, bid, ask);
+        return Objects.hash(no, effectiveDate, bid, ask);
     }
 }
