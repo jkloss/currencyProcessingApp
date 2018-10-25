@@ -1,11 +1,13 @@
 package com.currencyapp.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
 
 public class JsonRateModel {
     @NotBlank
