@@ -1,9 +1,9 @@
 package com.currencyapp.app.controllers;
 
 import com.currencyapp.app.exceptions.WrongDateException;
+import com.currencyapp.app.exceptions.WrongFormatException;
 import com.currencyapp.app.services.RateService;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,6 +27,10 @@ public class RateRestController {
             throw new WrongDateException();
         }
 
+        if (!code.matches("^[A-Za-z]+$")) {
+            throw new WrongFormatException();
+        }
+
         Map<String, Double> standardDeviationAndAverageMap = rateService.getStandardDeviationAndAverageMap(code,
                 LocalDate.parse(startDate), LocalDate.parse(endDate));
         return new ModelAndView("resultView", "valuesToDisplay", standardDeviationAndAverageMap);
@@ -36,5 +40,11 @@ public class RateRestController {
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     private ModelAndView getWrongDateException() {
         return new ModelAndView("wrongDateError");
+    }
+
+    @ExceptionHandler(value = WrongFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ModelAndView getWrongFormatException() {
+        return new ModelAndView("wrongFormatError");
     }
 }
