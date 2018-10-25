@@ -16,7 +16,7 @@
             display: inline-block;
             font-size: 20px;
         }
-        #main {
+        .main {
             text-align: center;
             text-decoration: darkslategray;
             font-family: "Arial Black", serif;
@@ -27,7 +27,9 @@
     </style>
 </head>
 <body>
-<h1 id="main">Welcome in my application! Are you ready to start?</h1>
+<h1 class="main">Welcome in my application!</h1>
+<h2 class="main">Here you can count average value of buy rate for chosen currency and standard deviation value for sell rate</h2>
+<h2 class="main">If you are ready click button below :)</h2>
     <div id="butt">
         <form action="/credentials" method="get">
             <button id="click" type="submit">Click me</button>

@@ -1,5 +1,6 @@
 package com.currencyapp.app.controllers;
 
+import com.currencyapp.app.exceptions.MoreOrLessThanThreeLettersException;
 import com.currencyapp.app.exceptions.WrongDateException;
 import com.currencyapp.app.exceptions.WrongFormatException;
 import com.currencyapp.app.services.RateService;
@@ -21,14 +22,21 @@ public class RateRestController {
     @GetMapping(value = "/process", produces = "application/json")
     public ModelAndView processData(@RequestParam String code, @RequestParam String startDate,
                                     @RequestParam String endDate) {
-        LocalDate date = LocalDate.parse(endDate);
 
-        if (date.isBefore(LocalDate.parse(startDate))) {
+        LocalDate firstDate = LocalDate.parse(endDate);
+        LocalDate secondDate = LocalDate.parse(startDate);
+
+        if (firstDate.isBefore(LocalDate.parse(startDate)) || firstDate.isAfter(LocalDate.now())
+                || secondDate.isAfter(LocalDate.now())) {
             throw new WrongDateException();
         }
 
         if (!code.matches("^[A-Za-z]+$")) {
             throw new WrongFormatException();
+        }
+
+        if (code.length() != 3) {
+            throw new MoreOrLessThanThreeLettersException();
         }
 
         Map<String, Double> standardDeviationAndAverageMap = rateService.getStandardDeviationAndAverageMap(code,
@@ -41,10 +49,14 @@ public class RateRestController {
     private ModelAndView getWrongDateException() {
         return new ModelAndView("wrongDateError");
     }
-
     @ExceptionHandler(value = WrongFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ModelAndView getWrongFormatException() {
         return new ModelAndView("wrongFormatError");
+    }
+    @ExceptionHandler(value = MoreOrLessThanThreeLettersException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ModelAndView getThreeLettersException() {
+        return new ModelAndView("threeLettersError");
     }
 }
