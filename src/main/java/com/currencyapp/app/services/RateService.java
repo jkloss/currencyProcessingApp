@@ -6,6 +6,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class RateService {
                 .average();
 
         if (averageAsOptional.isPresent()) {
-            return averageAsOptional.getAsDouble();
+            return Double.parseDouble(new DecimalFormat(".######").format(averageAsOptional.getAsDouble()));
         } else {
             throw new RuntimeException();
         }
@@ -61,7 +62,7 @@ public class RateService {
             standardDeviation = standardDeviation + Math.pow(num - quotient, 2);
         }
 
-        return Math.sqrt(standardDeviation / listLength);
+        return Double.parseDouble(new DecimalFormat(".######").format(Math.sqrt(standardDeviation / listLength)));
     }
 
     public Map<String, Double> getStandardDeviationAndAverageMap(String code, LocalDate startDate,
