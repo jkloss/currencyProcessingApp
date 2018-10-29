@@ -4,8 +4,9 @@ import com.currencyapp.app.exceptions.MoreOrLessThanThreeLettersException;
 import com.currencyapp.app.exceptions.WrongDateException;
 import com.currencyapp.app.exceptions.WrongFormatException;
 import com.currencyapp.app.services.RateService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -42,21 +43,5 @@ public class RateRestController {
         Map<String, Double> standardDeviationAndAverageMap = rateService.getStandardDeviationAndAverageMap(code,
                 LocalDate.parse(startDate), LocalDate.parse(endDate));
         return new ModelAndView("resultView", "valuesToDisplay", standardDeviationAndAverageMap);
-    }
-
-    @ExceptionHandler(value = WrongDateException.class)
-    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    private ModelAndView getWrongDateException() {
-        return new ModelAndView("wrongDateError");
-    }
-    @ExceptionHandler(value = WrongFormatException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ModelAndView getWrongFormatException() {
-        return new ModelAndView("wrongFormatError");
-    }
-    @ExceptionHandler(value = MoreOrLessThanThreeLettersException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ModelAndView getThreeLettersException() {
-        return new ModelAndView("threeLettersError");
     }
 }
