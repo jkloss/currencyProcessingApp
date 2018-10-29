@@ -40,7 +40,7 @@ public class RateService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return sum.divide(new BigDecimal(listOfNumbersConvertedToBD.size()), RoundingMode.HALF_UP)
-                .setScale(5, RoundingMode.HALF_UP);
+                .setScale(4, RoundingMode.HALF_UP);
 
     }
 
@@ -66,7 +66,7 @@ public class RateService {
 
         return (standardDeviation.divide(BigDecimal.valueOf(listLength), RoundingMode.HALF_UP))
                 .sqrt(new MathContext(10))
-                .setScale(5, RoundingMode.HALF_UP);
+                .setScale(4, RoundingMode.HALF_UP);
 
     }
 
