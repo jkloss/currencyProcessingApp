@@ -1,17 +1,17 @@
 package com.currencyapp.app.services;
 
 import com.currencyapp.app.model.RateModel;
-import com.currencyapp.app.model.Rate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalDouble;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,43 +31,48 @@ public class RateService {
                 + startDate + "/" + endDate, RateModel.class);
     }
 
-    private Double getAverageBuyRate(String code, LocalDate startDate, LocalDate endDate) {
-        OptionalDouble averageAsOptional = getRateModelObject(code, startDate, endDate).getRates().stream()
-                .mapToDouble(Rate::getBid)
-                .average();
-
-        if (averageAsOptional.isPresent()) {
-            return Double.parseDouble(new DecimalFormat(".######").format(averageAsOptional.getAsDouble()));
-        } else {
-            throw new RuntimeException();
-        }
-    }
-
-    private Double getSellStandardDeviation(String code, LocalDate startDate, LocalDate endDate) {
-        List<Double> askValues = getRateModelObject(code, startDate, endDate).getRates().stream()
-                .map(Rate::getAsk)
+    private BigDecimal getAverageBuyRate(String code, LocalDate startDate, LocalDate endDate) {
+        List<BigDecimal> listOfNumbersConvertedToBD = getRateModelObject(code, startDate, endDate).getRates().stream()
+                .map(r -> new BigDecimal(String.valueOf(r.getBid())))
                 .collect(toList());
 
-        double sum = 0.0;
-        double standardDeviation = 0.0;
-        int listLength = askValues.size();
+        BigDecimal sum = listOfNumbersConvertedToBD.stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        for (double num : askValues) {
-            sum = sum + num;
-        }
+        return sum.divide(new BigDecimal(listOfNumbersConvertedToBD.size()), RoundingMode.HALF_UP)
+                .setScale(5, RoundingMode.HALF_UP);
 
-        double quotient = sum / listLength;
-
-        for (double num : askValues) {
-            standardDeviation = standardDeviation + Math.pow(num - quotient, 2);
-        }
-
-        return Double.parseDouble(new DecimalFormat(".######").format(Math.sqrt(standardDeviation / listLength)));
     }
 
-    public Map<String, Double> getStandardDeviationAndAverageMap(String code, LocalDate startDate,
+    private BigDecimal getSellStandardDeviation(String code, LocalDate startDate, LocalDate endDate) {
+
+        List<BigDecimal> askValues = getRateModelObject(code, startDate, endDate).getRates().stream()
+                .map(v -> new BigDecimal(String.valueOf(v.getAsk())))
+                .collect(toList());
+
+        BigDecimal sum = BigDecimal.ZERO;
+        BigDecimal standardDeviation = BigDecimal.ZERO;
+        int listLength = askValues.size();
+
+        for (BigDecimal num : askValues) {
+            sum = sum.add(num);
+        }
+
+        BigDecimal quotient = sum.divide(BigDecimal.valueOf(listLength), RoundingMode.HALF_UP);
+
+        for (BigDecimal num : askValues) {
+            standardDeviation = standardDeviation.add((num.subtract(quotient)).pow(2));
+        }
+
+        return (standardDeviation.divide(BigDecimal.valueOf(listLength), RoundingMode.HALF_UP))
+                .sqrt(new MathContext(10))
+                .setScale(5, RoundingMode.HALF_UP);
+
+    }
+
+    public Map<String, BigDecimal> getStandardDeviationAndAverageMap(String code, LocalDate startDate,
                                                                  LocalDate endDate) {
-        Map<String, Double> map = new HashMap<>();
+        Map<String, BigDecimal> map = new HashMap<>();
         map.put("standardDeviation", getSellStandardDeviation(code, startDate, endDate));
         map.put("average", getAverageBuyRate(code, startDate, endDate));
 

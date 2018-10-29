@@ -3,6 +3,7 @@ package com.currencyapp.app.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -26,7 +27,7 @@ class RateServiceTest {
         LocalDate dateOne = LocalDate.of(2017, 02, 11);
         LocalDate dateTwo = LocalDate.of(2017, 02, 13);
         //When
-        Map<String, Double> mapToTest = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
+        Map<String, BigDecimal> mapToTest = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
         //Then
         assertNotNull(mapToTest);
     }
@@ -50,7 +51,7 @@ class RateServiceTest {
         LocalDate dateOne = LocalDate.of(2017, 02, 11);
         LocalDate dateTwo = LocalDate.of(2017, 02, 13);
         //When
-        Map<String, Double> map = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
+        Map<String, BigDecimal> map = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
         //Then
         assertNotNull(map.values());
 
