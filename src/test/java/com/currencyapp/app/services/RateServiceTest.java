@@ -1,64 +1,45 @@
 package com.currencyapp.app.services;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 class RateServiceTest {
 
-    @BeforeEach
-    void setUp() {
-        initMocks(this);
-    }
-
-    @Mock
+    @Autowired
     private RateService rateService;
 
     @Test
     void isMapNotEmpty() {
         //Given
-        String code = "eur";
-        LocalDate dateOne = LocalDate.of(2017, 2, 11);
-        LocalDate dateTwo = LocalDate.of(2017, 2, 13);
-        Map<String, BigDecimal> mapToTest = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
+        final String code = "eur";
+        final LocalDate dateOne = LocalDate.of(2017, 2, 11);
+        final LocalDate dateTwo = LocalDate.of(2017, 2, 13);
         //When
-        mapToTest.put("test", new BigDecimal(234.78));
+        final Map<String, BigDecimal> mapToTest = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
         //Then
         assertFalse(mapToTest.isEmpty());
     }
 
     @Test
-    void isMapContainingStringAsKey() {
-        //Given
-        String code = "eur";
-        LocalDate dateOne = LocalDate.of(2017, 2, 11);
-        LocalDate dateTwo = LocalDate.of(2017, 2, 13);
-        Map<String, BigDecimal> map = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
-        //When
-        map.put("test", new BigDecimal(3453.54));
-        //Then
-        assertTrue(map.containsKey("test"));
-    }
-
-    @Test
     void areMapValuesNotNull() {
         //Given
-        String code = "eur";
-        LocalDate dateOne = LocalDate.of(2017, 2, 11);
-        LocalDate dateTwo = LocalDate.of(2017, 2, 13);
-        Map<String, BigDecimal> map = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
+        final String code = "eur";
+        final LocalDate dateOne = LocalDate.of(2017, 2, 11);
+        final LocalDate dateTwo = LocalDate.of(2017, 2, 13);
         //When
-        map.put("test", new BigDecimal(342.654));
+        final Map<String, BigDecimal> map = rateService.getStandardDeviationAndAverageMap(code, dateOne, dateTwo);
         //Then
         assertNotNull(map.values());
     }
