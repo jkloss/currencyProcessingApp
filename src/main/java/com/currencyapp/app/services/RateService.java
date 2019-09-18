@@ -33,8 +33,7 @@ public class RateService {
                 .map(rate -> new BigDecimal(String.valueOf(rate.getBid())))
                 .collect(toList());
 
-        final BigDecimal sum = listOfNumbersConvertedToBD.stream()
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        final BigDecimal sum = getSumOfBigDecimalCollection(listOfNumbersConvertedToBD);
 
         return sum.divide(new BigDecimal(listOfNumbersConvertedToBD.size()), RoundingMode.HALF_UP)
                 .setScale(4, RoundingMode.HALF_UP);
@@ -50,8 +49,7 @@ public class RateService {
         BigDecimal standardDeviation = BigDecimal.ZERO;
         final int listLength = askValues.size();
 
-        final BigDecimal sumOfAskValues = askValues.stream()
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        final BigDecimal sumOfAskValues = getSumOfBigDecimalCollection(askValues);
 
         final BigDecimal quotient = sumOfAskValues.divide(BigDecimal.valueOf(listLength), RoundingMode.HALF_UP);
 
@@ -63,6 +61,11 @@ public class RateService {
                 .sqrt(new MathContext(10))
                 .setScale(4, RoundingMode.HALF_UP);
 
+    }
+
+    private BigDecimal getSumOfBigDecimalCollection(final List<BigDecimal> bigDecimalList) {
+        return bigDecimalList.stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Map<String, BigDecimal> getStandardDeviationAndAverageMap(final String code, final LocalDate startDate, final LocalDate endDate) {
